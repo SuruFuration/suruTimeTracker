@@ -42,6 +42,7 @@ const userSchema = Schema({
   ],
   // project:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }
   // ],
+  
   project: [{ 
     project: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
     projectReport: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' }]
