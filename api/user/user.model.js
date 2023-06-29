@@ -40,9 +40,6 @@ const userSchema = Schema({
   role: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
   ],
-  // project:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }
-  // ],
-  
   project: [{ 
     project: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
     projectReport: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' }]
