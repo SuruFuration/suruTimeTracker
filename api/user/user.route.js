@@ -4,6 +4,9 @@ const { isAuthenticatedUser } = require('../middleware/auth')
 
 const { 
     userInsert,
+    showUsers,
+    showUser,
+    deleteUser,
     loginUser,
     logoutUser, 
     resetPassword, 
@@ -15,12 +18,15 @@ const {
 
 router.post('/new', userInsert);
 
+router.get('/list', showUsers );
+
+router.get('/show/:id', showUser );
+
+router.delete('/delete/:id', deleteUser);
+
 router.post('/login/:token', loginUser);
 
 router.get ('/logout', logoutUser);
-
-
-
 
 router.post('/password/forgot', forgetPassword);
 

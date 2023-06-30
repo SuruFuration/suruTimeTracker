@@ -9,6 +9,7 @@ const sendToken = require("../utils/jwtToken");
 const crypto = require("crypto")
 const { google } = require('googleapis');
 let { validateUser } = require('./user.validator');
+let UserModel = require('./user.model');
 
 
 const CLIENT_ID = '983972594472-cgl7t5ag7lnbp96eb7pffhevhs1jgu35.apps.googleusercontent.com';
@@ -118,12 +119,59 @@ exports.userInsert = async (req, res, next) => {
   }
 };
 
+// Display List
+exports.showUsers = async (req, res, next) => {
+  try {
+    let user = await UserModel.find();
+    if (!user || user.length === 0) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+// Display Single User
+exports.showUser = async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    let user = await UserModel.findOne({ _id: id });
+
+    if (!user) {
+      console.log('user not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ user });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+// Delete Table
+exports.deleteUser = async (req, res, next) => {
+  try {
+    let id = req.params.id;
+
+    let user = await UserModel.deleteOne({ _id: id });
+
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ id });
+  } catch (error) {
+    // Send Error Response
+    res.status(500).json({ error });
+  }
+};
 
 //Login User
 const Joi = require('joi');
-// const { catchAsyncError } = require('your-error-handler-module'); // Replace with your actual error handler module
 
-// Validation schema for login data
 const loginSchema = Joi.object({
   email_address: Joi.string().email().required(),
   password: Joi.string().required(),
@@ -131,7 +179,7 @@ const loginSchema = Joi.object({
 
 exports.loginUser = catchAsyncError(async (req, res, next) => {
   try {
-    // Validate input data
+    
     const { error } = loginSchema.validate(req.body);
     if (error) {
       return next(new Error('Validation error: ' + error.details[0].message));
@@ -296,11 +344,13 @@ exports.profileUpdate = catchAsyncError(async (req, res, next) => {
     email_address: req.body.email_address
   }
 
-  const updateUserProfile = await user.findByIdAndUpdate(req.body.id, newUserData, {
+  const updateUserProfile = await user.findOneAndUpdate(req.body.id, newUserData, {
     new: true,
     runValidators: true,
     useFindAndModify: false
   });
+
+  console.log(updateUserProfile)
   
   res.status(200).json({
     success:true,
