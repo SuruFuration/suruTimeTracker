@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const projectSchema = Schema({
-  ProjectName: {
+  project_name: {
     type: String,
     required: true
   },
@@ -40,7 +40,7 @@ const projectSchema = Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }],
-  projectReport: [
+  projectReports: [
     { type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' }
   ],
   timeTask: [

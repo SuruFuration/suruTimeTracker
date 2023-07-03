@@ -1,17 +1,23 @@
 let express = require('express');
 let router = express.Router(); // access the method of route
 
-const { 
-    projectInsert,
-    userByProject
-} = require('./project.controller');
+let projectController = require('./project.controller');
 
-//  insert project
-router.post('/new/:id', projectInsert);
+router.post('/new', projectController.projectInsert);
 
-// //Show List
-router.get('/populate/:id', userByProject);
+//Show List
+router.get('/list', projectController.showAllProjects);
 
+//Display one single Detail
+router.get('/show/:id', projectController.showSingleProject);
 
+//Update single Details
+router.put('/update/:id', projectController.updateProject);
+
+//Delete single Details
+router.delete('/delete/:id', projectController.deleteProject);
+
+// Find Company for Test
+router.get('/find-user', projectController.findUserByProjectId)
 
 module.exports = router;

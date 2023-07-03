@@ -34,17 +34,32 @@ const userSchema = Schema({
   },
   userPasswordToken: String,
   userPasswordExpires: Date,
-  attendance: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Attendance' }
-  ],
-  role: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Role' }
-  ],
-  project: [{ 
-    project: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Project' }],
-    projectReport: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' }]
+  attendance: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Attendance' 
   }],
-  timeTask: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Timetask' } ]
+  roles: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Role' 
+  }],
+  projects: [{ 
+    project: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Project' 
+    }],
+    projectReport: [{ 
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'ProjectReport' 
+    }]
+  }],
+  timeTask: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Timetask' 
+  }],
+  transaction: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Transaction' 
+  }]
 });
 
 userSchema.pre("save", async function (next) {

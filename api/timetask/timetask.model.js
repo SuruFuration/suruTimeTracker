@@ -4,12 +4,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const timetaskSchema = Schema({
-
-
     start_time: {
         type: Date,
         required: true
-       // default: Date.now,
       },
       ideal_time: {
         type: Date,
@@ -18,12 +15,10 @@ const timetaskSchema = Schema({
       duration_time: {
         type: Number,
         required: true
-        //default: Date.now,
       },
       end_time: {
         type: Date,
         required: true
-       // default: Date.now,
       },
       user: {
         type: Map,
@@ -41,7 +36,6 @@ const timetaskSchema = Schema({
         },
         required: true,
       }
-  
  })
 
  module.exports = mongoose.model("Timetask", timetaskSchema);

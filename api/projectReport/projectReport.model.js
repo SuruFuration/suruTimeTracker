@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const projectReportSchema  = Schema({
 
-  report_name: {
+  projectReport_name: {
     type: String,
     required: true,
     maxlength: 255,
@@ -28,7 +28,7 @@ const projectReportSchema  = Schema({
     type: Boolean,
     default: true,
   },
-  project: [{
+  projects: [{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Project'
   }]

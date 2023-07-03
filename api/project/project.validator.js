@@ -2,9 +2,8 @@ const Joi = require('joi');
 
 
 const projectSchema = Joi.object({
-
-    
-    ProjectName: Joi.string().required(),
+    user_id: Joi.string().alphanum().length(24),
+    project_name: Joi.string().required(),
     StartDate: Joi.date().required(),
     status: Joi.string().required(),
     Create_At: Joi.date().required(),
@@ -16,8 +15,8 @@ const projectSchema = Joi.object({
 
 
   const updateSchema = Joi.object({
-
-    ProjectName: Joi.string().required(),
+    user_id: Joi.string().alphanum().length(24),
+    project_name: Joi.string().required(),
     StartDate: Joi.date().required(),
     status: Joi.string().required(),
     Create_At: Joi.date().required(),

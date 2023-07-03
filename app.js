@@ -37,6 +37,9 @@ app.use('/role', roleRouter);
 var projectReportRouter = require('./api/projectReport/projectReport.route');
 app.use('/projectReport', projectReportRouter);
 
+var transactionRouter = require('./api/transactions/transaction.route');
+app.use('/transaction', transactionRouter);
+
 // moongoose Connection
 
 const mongoose = require('mongoose');

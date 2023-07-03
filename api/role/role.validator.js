@@ -1,18 +1,14 @@
 const Joi = require('joi');
 
 const roleSchema = Joi.object({
- 
-  name: Joi.string().max(25).required(),
-  
- 
+  user_id: Joi.string().alphanum().length(24),
+  role_name: Joi.string().max(25).required(),
 });
 
 const updateSchema = Joi.object({
-
-    name: Joi.string().max(25).required(),
-    
-   
-  });
+  user_id: Joi.string().alphanum().length(24),
+  role_name: Joi.string().max(25).required(),
+});
 
 // Validate the role data
 function validateRole(roleData) {
@@ -25,7 +21,6 @@ function validateRole(roleData) {
   module.exports = {
     validateRole,
      validateUpdate
-    
   };
 
 // module.exports = validaterole;
