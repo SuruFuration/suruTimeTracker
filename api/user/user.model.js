@@ -34,7 +34,7 @@ const userSchema = Schema({
   },
   userPasswordToken: String,
   userPasswordExpires: Date,
-  attendance: [{ 
+  attendances: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Attendance' 
   }],
@@ -43,14 +43,8 @@ const userSchema = Schema({
     ref: 'Role' 
   }],
   projects: [{ 
-    project: [{ 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Project' 
-    }],
-    projectReport: [{ 
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'ProjectReport' 
-    }]
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Project' 
   }],
   timeTask: [{ 
     type: mongoose.Schema.Types.ObjectId, 

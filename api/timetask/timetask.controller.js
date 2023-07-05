@@ -7,10 +7,10 @@ let ProjectModel = require('../project/project.model');
 //insert new Timetask
 exports.timetaskInsert = async (req, res, next) => {
   try {
-    const { start_time, ideal_time, duration_time, end_time, user, project } = req.body;
+    const { start_time, ideal_time, duration_time, end_time, user, projects } = req.body;
     const mappedUsers = {};
     const mappedProjects = {};
-    console.log(start_time, ideal_time, duration_time, end_time, user, project)
+    console.log(start_time, ideal_time, duration_time, end_time, user, projects)
 
     for (const key1 in user) {
       console.log(key1, user[key1])
@@ -26,7 +26,7 @@ exports.timetaskInsert = async (req, res, next) => {
     for (const key1 in project) {
       console.log(key1, project[key1])
       modelProject = await ProjectModel.findOne({ _id: key1 });
-      mappedProjects[key1] = project[key1]
+      mappedProjects[key1] = projects[key1]
 
       if (!modelProject) {
         res.status(500).json({ success: false, message: "No project in the Project List" })
@@ -34,7 +34,7 @@ exports.timetaskInsert = async (req, res, next) => {
     }
     console.log(mappedProjects)
 
-    const timeTask = new TimetaskModel({ start_time, ideal_time, duration_time, end_time, user: mappedUsers, project: mappedProjects });
+    const timeTask = new TimetaskModel({ start_time, ideal_time, duration_time, end_time, user: mappedUsers, projects: mappedProjects });
     await timeTask.save();
     //   res.json(recipe);
     res.status(200).json(timeTask)

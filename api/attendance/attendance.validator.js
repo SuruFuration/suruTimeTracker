@@ -1,41 +1,32 @@
 const Joi = require('joi');
 
 const attendanceSchema = Joi.object({
- 
-  check_in: Joi.date().max(25).required(),
-  date: Joi.date().max(50).required(),
+  user_id: Joi.string().alphanum().length(24),
+  check_in: Joi.date().required(),
+  date: Joi.date().required(),
   status: Joi.string().max(50).required(),
-  check_out: Joi.date().max(50).required(),
-  Emp_id: Joi.string().max(25).allow(null),
+  check_out: Joi.date().required(),
   remark: Joi.string().max(100).required(),
-  
-
- 
 });
 
-// const updateSchema = Joi.object({
-    
-//     check_in: Joi.date().max(25).required(),
-//     date: Joi.date().max(50).required(),
-//     status: Joi.string().max(50).required(),
-//     check_out: Joi.date().max(50).required(),
-//     Emp_id: Joi.string().max(25).allow(null),
-//     remark: Joi.string().max(100).required(),
-   
-//   });
+const updateSchema = Joi.object({
+  user_id: Joi.string().alphanum().length(24),
+  check_in: Joi.date().required(),
+  date: Joi.date().required(),
+  status: Joi.string().max(50).required(),
+  check_out: Joi.date().required(),
+  remark: Joi.string().max(100).required(),
+  });
 
-// Validate the area data
 function validateAttendance(attendanceData) {
     return attendanceSchema.validate(attendanceData);
   }
   
-  // function validateUpdate(updateData) {
-  //   return updateSchema.validate(updateData);
-  // }
+  function validateUpdate(updateData) {
+    return updateSchema.validate(updateData);
+  }
   module.exports = {
-    validateAttendance
-    //validateUpdate
+    validateAttendance,
+    validateUpdate
     
   };
-
-// module.exports = validateuser;

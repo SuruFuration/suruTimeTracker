@@ -28,7 +28,7 @@ const timetaskSchema = Schema({
         },
         required: true,
       },
-      project: {
+      projects: {
         type: Map,
         of: {
           type: String,

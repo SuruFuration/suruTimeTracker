@@ -129,3 +129,43 @@ const mailToEmailUrl = `${req.protocol}://${req.get(
 )}/api/login/user/${loginUser}`;
 
 const message = `Your password reset token is: ${mailToEmailUrl}\n\nIf you have not requested this email, please ignore it.`;
+
+
+
+exports.attendanceInsert = async (req, res, next) => {
+  try {
+    // Validation
+    const { error, value } = validateAttendance(req.body);
+
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const attendanceExists = await AttendanceModel.findOne({ attendance_name: value.attendance_name });
+
+    if (attendanceExists) {
+      return res.status(409).json({ message: "Attendance already exists!" });
+    }
+
+    // Insert Attendance
+    const attendance = new AttendanceModel(value);
+    const savedAttendance = await attendance.save();
+
+    // Update User's attendance array with the new attendance ID
+    const user = await UserModel.findOne({ _id: value.user_id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    user.attendances.push(savedAttendance._id);
+    await user.save();
+
+    // Send Response
+    res.status(200).json({ message: "success", attendance: savedAttendance, user });
+  } catch (error) {
+    // Send Error Response
+    console.error(error);
+    res.status(500).json({ message: "Error inserting data into database" });
+  }
+};

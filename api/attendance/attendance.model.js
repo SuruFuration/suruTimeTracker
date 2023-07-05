@@ -21,10 +21,6 @@ const attendanceSchema = Schema({
         type: Date,
         required: true
       },
-      Emp_id: {
-        type: String,
-        default: null
-      },
       remark: {
         type: String,
         required: true

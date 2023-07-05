@@ -1,49 +1,142 @@
-let mongoose = require('mongoose');
+// const { validateAttendance } = require("./Attendance.validator");
+const { validateAttendance, validateUpdate } = require("./attendance.validator");
+const AttendanceModel = require("./attendance.model");
+const UserModel = require("../user/user.model");
 
-const User = require('../user/user.model');
-const Attendance = require('./attendance.model');
+exports.attendanceInsert = async (req, res, next) => {
+  try {
+    // Validation
+    const { error, value } = validateAttendance(req.body);
 
-exports.attendanceInsert = async (req,res,next) => {
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
 
+    const attendanceExists = await AttendanceModel.findOne({ date: value.date });
 
-    // let { error, value } = validateAttendance(req.body);
+    if (attendanceExists) {
+      return res.status(409).json({ message: "Attendance already exists!" });
+    }
 
-      console.log(req.params);
-      user = req.params;
-      id = user.id;
-      const { check_in, date, status, check_out, Emp_id, remark} = req.body;
-      const attendance = await Attendance.create({
-        check_in,
-        date,
-        status,
-        check_out,
-        Emp_id,
-        remark,
-        user:id
-      });
-      await attendance.save();
-      
-      console.log(attendance);
-      const userById = await User.findById(id);
-      console.log(attendance,userById)
-      userById.attendance.push(attendance);
-      await userById.save();
+    // Insert Attendance
+    const attendance = new AttendanceModel(value);
+    const savedAttendance = await attendance.save();
 
-      return res.send(userById);
+    // Update User's attendance array with the new attendance ID
+    const user = await UserModel.findOne({ _id: value.user_id });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    user.attendances.push(savedAttendance._id);
+    await user.save();
+
+    // Send Response
+    res.status(200).json({ message: "success", attendance: savedAttendance, user });
+  } catch (error) {
+    // Send Error Response
+    console.error(error);
+    res.status(500).json({ message: "Error inserting data into database" });
   }
-// }
+};
 
-// userByAttendance : async (req,res)=>/{
-  exports.userByAttendance = async (req,res,next) => {
+exports.showAllAttendances = async (req, res, next) => {
+  try {
+    const attendances = await AttendanceModel.find();
+    if (!attendances || attendances.length === 0) {
+      return res.status(404).json({ message: "Attendances not found" });
+    }
+    res.status(200).json({ attendances });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+exports.showSingleAttendance = async (req, res, next) => {
+  try {
     const id = req.params.id;
-    const userByAttendance = await Attendance.findById(id).populate('user');
-    console.log(id)
-    // const userByAttendance = await Attendance.findOne(id).populate('user');
-    console.log('==============>', id);
-    
-    // console.log(userByAttendance);
+    const attendance = await AttendanceModel.findOne({ _id: id });
 
-    // const userByAttendance = await Attendance.findById(id);
-    res.send(userByAttendance);
-    console.log('#####>', id);
+    if (!attendance) {
+      return res.status(404).json({ message: "Attendance not found" });
+    }
+
+    res.status(200).json({ message: "success", attendance });
+  } catch (error) {
+    res.status(500).json({ error });
   }
+};
+
+exports.updateAttendance = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    // Validation
+    const { error, value } = validateUpdate(req.body);
+
+    // Check Error in Validation
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
+
+    const attendance = await AttendanceModel.findOneAndUpdate({ _id: id }, value, {
+      new: true,
+    });
+
+    if (!attendance) {
+      return res.status(404).json({ message: "Attendance not found" });
+    }
+
+    res.status(200).json({ message: "success", attendance });
+  } catch (error) {
+    // Send Error Response
+    res.status(500).json({ message: "Error updating table" });
+  }
+};
+
+exports.deleteAttendance = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const attendance = await AttendanceModel.findById(id);
+
+    if (!attendance) {
+      return res.status(404).json({ message: "Attendance not found" });
+    }
+
+    // Find the User that contains the Attendance ID
+    const user = await UserModel.findOne({ _id: attendance.user_id });
+
+    if (user) {
+      // Remove the Attendance ID from the User's Attendances array
+      user.Attendances = user.attendances.filter(
+        (attendanceId) => !attendanceId.equals(id)
+      );
+      await user.save();
+    }
+
+    // Delete the Attendance from the Attendance collection
+    await AttendanceModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Attendance deleted successfully", user });
+  } catch (error) {
+    // Send Error Response
+    res.status(500).json({ error });
+  }
+};
+
+exports.findUserByAttendanceId = async (req, res, next) => {
+  try {chcha
+    // console.log(req.body._id)
+    const attendance = await AttendanceModel.findById(req.body._id).populate("User");
+    if (!attendance) {
+      return res.status(404).json({ message: "attendance not found" });
+    }
+    const user = attendance.User;
+    // console.log(Attendance._id);
+    res.status(200).json({ message: "success", user });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
