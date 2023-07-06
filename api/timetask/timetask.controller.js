@@ -1,45 +1,127 @@
-let mongoose = require('mongoose');
-let TimetaskModel = require('./timetask.model');
-let UserModel = require('../user/user.model');
-let ProjectModel = require('../project/project.model');
+// const { validateProject } = require("./Project.validator");
+const { validateTimetask, validateUpdate } = require("./timeTask.validator");
+const TimeTaskModel = require("./timeTask.model");
+const ProjectModel = require("../project/project.model");
 
-
-//insert new Timetask
-exports.timetaskInsert = async (req, res, next) => {
+exports.timeTaskInsert = async (req, res, next) => {
   try {
-    const { start_time, ideal_time, duration_time, end_time, user, projects } = req.body;
-    const mappedUsers = {};
-    const mappedProjects = {};
-    console.log(start_time, ideal_time, duration_time, end_time, user, projects)
+    // Validation
+    const { error, value } = validateTimetask(req.body);
 
-    for (const key1 in user) {
-      console.log(key1, user[key1])
-      modelUser = await UserModel.findOne({ _id: key1 });
-      mappedUsers[key1] = user[key1]
-
-      if (!modelUser) {
-        res.status(500).json({ success: false, message: "No user in the User List" })
-      }
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
     }
-    console.log(mappedUsers)
 
-    for (const key1 in project) {
-      console.log(key1, project[key1])
-      modelProject = await ProjectModel.findOne({ _id: key1 });
-      mappedProjects[key1] = projects[key1]
+    const timeTaskExists = await TimeTaskModel.findOne({ timeTask_name: value.timeTask_name });
 
-      if (!modelProject) {
-        res.status(500).json({ success: false, message: "No project in the Project List" })
-      }
+    if (timeTaskExists) {
+      return res.status(409).json({ message: "TimeTask already exists!" });
     }
-    console.log(mappedProjects)
 
-    const timeTask = new TimetaskModel({ start_time, ideal_time, duration_time, end_time, user: mappedUsers, projects: mappedProjects });
-    await timeTask.save();
-    //   res.json(recipe);
-    res.status(200).json(timeTask)
+    // Insert Project
+    const timeTask = new TimeTaskModel(value);
+    const savedtimeTask = await timeTask.save();
+
+    // Update project's timeTask array with the new timeTask ID
+    const project = await ProjectModel.findOne({ _id: value.project_id });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found!" });
+    }
+
+    project.timeTasks.push(savedtimeTask._id);
+    await project.save();
+
+    // Send Response
+    res.status(200).json({ message: "success", timeTask: savedtimeTask, project });
   } catch (error) {
-    console.log(error)
-    res.status(500).json({ error: 'Internal server error' });
+    // Send Error Response
+    console.error(error);
+    res.status(500).json({ message: "Error inserting data into database" });
+  }
+};
+
+exports.showAllTimeTasks = async (req, res, next) => {
+  try {
+    const timeTasks = await TimeTaskModel.find();
+    if (!timeTasks || timeTasks.length === 0) {
+      return res.status(404).json({ message: "TimeTasks not found" });
+    }
+    res.status(200).json({ timeTasks });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+exports.showSingleTimeTask = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const timeTask = await TimeTaskModel.findOne({ _id: id });
+
+    if (!timeTask) {
+      return res.status(404).json({ message: "TimeTask not found" });
+    }
+
+    res.status(200).json({ message: "success", timeTask });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+exports.updateTimeTask = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    // Validation
+    const { error, value } = validateUpdate(req.body);
+
+    // Check Error in Validation
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
+
+    const timeTask = await TimeTaskModel.findOneAndUpdate({ _id: id }, value, {
+      new: true,
+    });
+
+    if (!timeTask) {
+      return res.status(404).json({ message: "TimeTask not found" });
+    }
+
+    res.status(200).json({ message: "success", timeTask });
+  } catch (error) {
+    // Send Error Response
+    res.status(500).json({ message: "Error updating table" });
+  }
+};
+
+exports.deleteTimeTask = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+
+    const timeTask = await TimeTaskModel.findById(id);
+
+    if (!timeTask) {
+      return res.status(404).json({ message: "TimeTask not found" });
+    }
+
+    // Find the project that contains the Project ID
+    const project = await ProjectModel.findOne({ _id: timeTask.project_id });
+
+    if (project) {
+      // Remove the TimeTask ID from the Project's TimeTasks array
+      project.Projects = project.timeTasks.filter(
+        (timeTaskId) => !timeTaskId.equals(id)
+      );
+      await project.save();
+    }
+
+    // Delete the TimeTask from the TimeTask collection
+    await TimeTaskModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "TimeTask deleted successfully", project });
+  } catch (error) {
+    // Send Error Response
+    res.status(500).json({ error });
   }
 };

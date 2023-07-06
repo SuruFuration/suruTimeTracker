@@ -1,21 +1,21 @@
 const Joi = require('joi');
 
 const timetaskSchema = Joi.object({
+  project_id: Joi.string().alphanum().length(24),
+  task_name: Joi.string().required(),
   start_time: Joi.date().required(),
   ideal_time: Joi.date().required(),
   duration_time: Joi.number().required(),
   end_time: Joi.date().required(),
-  user: Joi.object().pattern(Joi.string(), Joi.string().required()).required(),
-  project: Joi.object().pattern(Joi.string(), Joi.string().required()).required(), 
 });
 
 const updateSchema = Joi.object({
+  project_id: Joi.string().alphanum().length(24),
+  task_name: Joi.string().required(),
   start_time: Joi.date().required(),
   ideal_time: Joi.date().required(),
   duration_time: Joi.number().required(),
-  end_time: Joi.date().required(),
-  user: Joi.object().pattern(Joi.string(), Joi.string().required()).required(),
-  project: Joi.object().pattern(Joi.string(), Joi.string().required()).required(),  
+  end_time: Joi.date().required(), 
 });
 
 function validateTimetask(timetaskData) {

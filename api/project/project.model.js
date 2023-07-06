@@ -36,15 +36,9 @@ const projectSchema = Schema({
     type: Date,
     required: true
   },
-  user: [
-    {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
-  ],
-  projectReports: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' }
-  ],
-  timeTask: [
-    { type: mongoose.Schema.Types.ObjectId, ref: 'Timetask' }
-  ]
+  user_id: [ {type: mongoose.Schema.Types.ObjectId, ref: 'User'} ],
+  projectReports: [ { type: mongoose.Schema.Types.ObjectId, ref: 'ProjectReport' } ],
+  timeTasks: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Timetask' } ]
 })
 
 module.exports = mongoose.model("Project", projectSchema);

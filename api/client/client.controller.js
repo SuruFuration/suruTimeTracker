@@ -1,4 +1,3 @@
-// const { validateClient } = require("./Client.validator");
 const { validateClient, validateUpdate } = require("./client.validator");
 const ClientModel = require("./client.model");
 const UserModel = require("../user/user.model");
@@ -106,12 +105,12 @@ exports.deleteClient = async (req, res, next) => {
     }
 
     // Find the User that contains the Client ID
-    const user = await UserModel.findOne({ _id: Client.user_id });
+    const user = await UserModel.findOne({ _id: client.user_id });
 
     if (user) {
       // Remove the Client ID from the User's Clients array
       user.Clients = user.clients.filter(
-        (ClientId) => !clientId.equals(id)
+        (clientId) => !clientId.equals(id)
       );
       await user.save();
     }
@@ -122,21 +121,6 @@ exports.deleteClient = async (req, res, next) => {
     res.status(200).json({ message: "Client deleted successfully", user });
   } catch (error) {
     // Send Error Response
-    res.status(500).json({ error });
-  }
-};
-
-exports.findUserByClientId = async (req, res, next) => {
-  try {chcha
-    // console.log(req.body._id)
-    const client = await ClientModel.findById(req.body._id).populate("User");
-    if (!client) {
-      return res.status(404).json({ message: "client not found" });
-    }
-    const user = client.User;
-    // console.log(Client._id);
-    res.status(200).json({ message: "success", user });
-  } catch (error) {
     res.status(500).json({ error });
   }
 };

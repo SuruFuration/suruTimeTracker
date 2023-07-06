@@ -125,18 +125,3 @@ exports.deleteAttendance = async (req, res, next) => {
     res.status(500).json({ error });
   }
 };
-
-exports.findUserByAttendanceId = async (req, res, next) => {
-  try {chcha
-    // console.log(req.body._id)
-    const attendance = await AttendanceModel.findById(req.body._id).populate("User");
-    if (!attendance) {
-      return res.status(404).json({ message: "attendance not found" });
-    }
-    const user = attendance.User;
-    // console.log(Attendance._id);
-    res.status(200).json({ message: "success", user });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};

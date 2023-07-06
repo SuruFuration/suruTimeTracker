@@ -18,8 +18,4 @@ router.put('/update/:id', attendanceController.updateAttendance);
 //Delete single Details
 router.delete('/delete/:id', attendanceController.deleteAttendance);
 
-// Find Company for Test
-router.get('/find-user', attendanceController.findUserByAttendanceId)
-
-
 module.exports = router;

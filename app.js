@@ -25,7 +25,7 @@ app.use('/user', userRouter);
 var projectRouter = require('./api/project/project.route');
 app.use('/project', projectRouter);
 
-var timeTaskRouter = require('./api/timeTask/timeTask.route');
+var timeTaskRouter = require('./api/timetask/timetask.route');
 app.use('/timeTask', timeTaskRouter);
 
 var attendanceRouter = require('./api/attendance/attendance.route');
@@ -37,8 +37,8 @@ app.use('/role', roleRouter);
 var projectReportRouter = require('./api/projectReport/projectReport.route');
 app.use('/projectReport', projectReportRouter);
 
-var transactionRouter = require('./api/transactions/transaction.route');
-app.use('/transaction', transactionRouter);
+var clientRouter = require('./api/client/client.route');
+app.use('/client', clientRouter);
 
 // moongoose Connection
 

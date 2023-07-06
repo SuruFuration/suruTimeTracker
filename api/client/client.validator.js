@@ -1,42 +1,38 @@
 const Joi = require('joi');
 
 
-const projectSchema = Joi.object({
-    user_id: Joi.string().alphanum().length(24),
-    project_name: Joi.string().required(),
-    StartDate: Joi.date().required(),
-    status: Joi.string().required(),
-    Create_At: Joi.date().required(),
-    Budget: Joi.number().default(null),
-    Update_At: Joi.date().required(),
-    Description: Joi.string().required(),
-    EndDate: Joi.date().required()
-  });
+const clientSchema = Joi.object({
+  user_id: Joi.string().required(),
+  client_name: Joi.string().required(),
+  client_project: Joi.string().required(),
+  client_contact: Joi.string().required(),
+  client_interaction: Joi.date().required(),
+  client_invoice: Joi.number().required(),
+  client_payment: Joi.string().required(),
+});
 
 
-  const updateSchema = Joi.object({
-    user_id: Joi.string().alphanum().length(24),
-    project_name: Joi.string().required(),
-    StartDate: Joi.date().required(),
-    status: Joi.string().required(),
-    Create_At: Joi.date().required(),
-    Budget: Joi.number().default(null),
-    Update_At: Joi.date().required(),
-    Description: Joi.string().required(),
-    EndDate: Joi.date().required()
-   
-  });
+const updateSchema = Joi.object({
+  user_id: Joi.string().required(),
+  client_name: Joi.string().required(),
+  client_project: Joi.string().required(),
+  client_contact: Joi.string().required(),
+  client_interaction: Joi.date().required(),
+  client_invoice: Joi.number().required(),
+  client_payment: Joi.string().required(),
+});
 
   // Validate the project data
-function validateProject(projectData) {
-    return projectSchema.validate(projectData);
+function validateClient(clientData) {
+    return clientSchema.validate(clientData);
   }
   
   function validateUpdate(updateData) {
     return updateSchema.validate(updateData);
   }
+  
   module.exports = {
-    validateProject,
+    validateClient,
     validateUpdate
     
   };

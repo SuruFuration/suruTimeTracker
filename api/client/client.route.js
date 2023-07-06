@@ -1,23 +1,20 @@
 let express = require('express');
 let router = express.Router(); // access the method of route
 
-let projectController = require('./project.controller');
+let clientController = require('./client.controller');
 
-router.post('/new', projectController.projectInsert);
+router.post('/new', clientController.clientInsert);
 
 //Show List
-router.get('/list', projectController.showAllProjects);
+router.get('/list', clientController.showAllClients);
 
 //Display one single Detail
-router.get('/show/:id', projectController.showSingleProject);
+router.get('/show/:id', clientController.showSingleClient);
 
 //Update single Details
-router.put('/update/:id', projectController.updateProject);
+router.put('/update/:id', clientController.updateClient);
 
 //Delete single Details
-router.delete('/delete/:id', projectController.deleteProject);
-
-// Find Company for Test
-router.get('/find-user', projectController.findUserByProjectId)
+router.delete('/delete/:id', clientController.deleteClient);
 
 module.exports = router;

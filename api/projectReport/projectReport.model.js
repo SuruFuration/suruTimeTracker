@@ -28,7 +28,7 @@ const projectReportSchema  = Schema({
     type: Boolean,
     default: true,
   },
-  projects: [{
+  project_id: [{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Project'
   }]

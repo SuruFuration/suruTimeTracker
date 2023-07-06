@@ -46,13 +46,13 @@ const userSchema = Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Project' 
   }],
-  timeTask: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Timetask' 
-  }],
   transaction: [{ 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Transaction' 
+  }],
+  clients: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Client' 
   }]
 });
 
