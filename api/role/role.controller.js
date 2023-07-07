@@ -125,18 +125,3 @@ exports.deleteRole = async (req, res, next) => {
     res.status(500).json({ error });
   }
 };
-
-exports.findUserByRoleId = async (req, res, next) => {
-  try {chcha
-    // console.log(req.body._id)
-    const role = await RoleModel.findById(req.body._id).populate("User");
-    if (!role) {
-      return res.status(404).json({ message: "role not found" });
-    }
-    const user = role.User;
-    // console.log(Role._id);
-    res.status(200).json({ message: "success", user });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
